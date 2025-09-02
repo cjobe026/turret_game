@@ -1,0 +1,153 @@
+[gd_scene load_steps=19 format=3 uid="uid://b05745iq33irx"]
+
+[ext_resource type="PackedScene" uid="uid://ba4qn1drttpnv" path="res://Assets/models/turret.glb" id="1_c2qwi"]
+[ext_resource type="Texture2D" uid="uid://d2mj327kxebsy" path="res://Assets/texture_05.png" id="2_8k4wd"]
+[ext_resource type="Shader" uid="uid://16w5u65w2p1m" path="res://Shaders/cel_shading.gdshader" id="2_6835q"]
+[ext_resource type="Script" uid="uid://d07pg1sb8lt1m" path="res://Scripts/edge_detection_compositor.gd" id="3_8k4wd"]
+[ext_resource type="PackedScene" uid="uid://ognr0bks5bsy" path="res://Scenes/player.tscn" id="4_8k4wd"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_17c0n"]
+albedo_texture = ExtResource("2_8k4wd")
+uv1_triplanar = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_fkbhw"]
+size = Vector2(1000, 1000)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pphgw"]
+render_priority = 0
+shader = ExtResource("2_6835q")
+shader_parameter/color = Color(0.808944, 0.697859, 0.362332, 1)
+shader_parameter/roughness = 1.0
+shader_parameter/lightSteps = 2
+shader_parameter/useRim = true
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_8k4wd"]
+data = PackedVector3Array(500, 0, 500, -500, 0, 500, 500, 0, -500, -500, 0, 500, -500, 0, -500, 500, 0, -500)
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_idx2o"]
+rayleigh_coefficient = 1.29
+ground_color = Color(0.313219, 0.479875, 0.8463, 1)
+
+[sub_resource type="Sky" id="Sky_kypv1"]
+sky_material = SubResource("PhysicalSkyMaterial_idx2o")
+
+[sub_resource type="Environment" id="Environment_n4gow"]
+background_mode = 1
+background_color = Color(0.415686, 0.537255, 0.72549, 1)
+sky = SubResource("Sky_kypv1")
+ambient_light_source = 2
+ambient_light_color = Color(0.415686, 0.537255, 0.72549, 1)
+ambient_light_energy = 1.5
+ssao_radius = 1.41
+ssao_intensity = 3.39
+ssao_detail = 2.0
+ssao_sharpness = 0.26
+ssil_radius = 3.65
+ssil_intensity = 4.0
+ssil_sharpness = 0.43
+ssil_normal_rejection = 0.9
+sdfgi_read_sky_light = false
+
+[sub_resource type="CompositorEffect" id="CompositorEffect_fkbhw"]
+resource_local_to_scene = false
+resource_name = ""
+enabled = true
+effect_callback_type = 4
+needs_motion_vectors = false
+needs_normal_roughness = true
+script = ExtResource("3_8k4wd")
+metadata/_custom_type_script = "uid://d07pg1sb8lt1m"
+
+[sub_resource type="Compositor" id="Compositor_pphgw"]
+compositor_effects = Array[CompositorEffect]([SubResource("CompositorEffect_fkbhw")])
+
+[sub_resource type="Animation" id="Animation_m0rpm"]
+length = 0.001
+
+[sub_resource type="Animation" id="Animation_rjqes"]
+resource_name = "rotating_objects"
+length = 5.0
+loop_mode = 1
+
+[sub_resource type="Animation" id="Animation_34m0v"]
+resource_name = "planet"
+length = 120.0
+loop_mode = 1
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_xr1em"]
+_data = {
+&"RESET": SubResource("Animation_m0rpm"),
+&"moving_objects": SubResource("Animation_rjqes"),
+&"planet": SubResource("Animation_34m0v")
+}
+
+[node name="World" type="Node3D"]
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+stretch_shrink = 2
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(576, 324)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 6.03694, 7.50437)
+projection = 1
+size = 8.095
+far = 50.0
+
+[node name="meshes" type="Node3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.153692, -4.76837e-07, -0.012567)
+
+[node name="turret" parent="SubViewportContainer/SubViewport/meshes" instance=ExtResource("1_c2qwi")]
+transform = Transform3D(-0.323073, 0, -0.786209, 0, 0.85, 0, 0.786209, 0, -0.323073, -0.40575, -0.0457354, 1.4807)
+
+[node name="Player" parent="SubViewportContainer/SubViewport/meshes" instance=ExtResource("4_8k4wd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.71863, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="SubViewportContainer/SubViewport/meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0, -0.0412053, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/meshes/StaticBody3D"]
+material_override = SubResource("StandardMaterial3D_17c0n")
+mesh = SubResource("PlaneMesh_fkbhw")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_pphgw")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SubViewportContainer/SubViewport/meshes/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.91846, 0.0227524, 0)
+shape = SubResource("ConcavePolygonShape3D_8k4wd")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(-0.101372, 0.707474, 0.699432, 0.00664804, -0.702556, 0.711598, 0.994826, 0.076786, 0.0665162, 8.7948, 14.121, -0.43273)
+light_color = Color(0.692457, 0.808874, 0.691561, 1)
+light_energy = 2.0
+shadow_enabled = true
+shadow_bias = 0.5
+shadow_blur = 0.1
+directional_shadow_mode = 1
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport"]
+environment = SubResource("Environment_n4gow")
+compositor = SubResource("Compositor_pphgw")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="SubViewportContainer/SubViewport"]
+libraries = {
+&"": SubResource("AnimationLibrary_xr1em")
+}
+autoplay = "planet"
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.64626, 0.444824, 0.465608)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="."]
+transform = Transform3D(0.665269, 0, -0.746603, 0, 1, 0, 0.746603, 0, 0.665269, -5.33873, 0.415616, 1.48456)
+size = Vector3(1, 1, 3)

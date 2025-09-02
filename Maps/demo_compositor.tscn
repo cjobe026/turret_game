@@ -1,0 +1,126 @@
+[gd_scene load_steps=15 format=3 uid="uid://cnuan21r3remy"]
+
+[ext_resource type="Shader" uid="uid://16w5u65w2p1m" path="res://Shaders/cel_shading.gdshader" id="2_pphgw"]
+[ext_resource type="Script" uid="uid://d07pg1sb8lt1m" path="res://Scripts/edge_detection_compositor.gd" id="6_fkbhw"]
+[ext_resource type="PackedScene" uid="uid://ba4qn1drttpnv" path="res://Assets/models/turret.glb" id="7_pphgw"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_fkbhw"]
+size = Vector2(30, 30)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pphgw"]
+render_priority = 0
+shader = ExtResource("2_pphgw")
+shader_parameter/color = Color(0.808944, 0.697859, 0.362332, 1)
+shader_parameter/roughness = 1.0
+shader_parameter/lightSteps = 2
+shader_parameter/useRim = true
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_idx2o"]
+rayleigh_coefficient = 1.29
+ground_color = Color(0.313219, 0.479875, 0.8463, 1)
+
+[sub_resource type="Sky" id="Sky_kypv1"]
+sky_material = SubResource("PhysicalSkyMaterial_idx2o")
+
+[sub_resource type="Environment" id="Environment_n4gow"]
+background_mode = 1
+background_color = Color(0.415686, 0.537255, 0.72549, 1)
+sky = SubResource("Sky_kypv1")
+ambient_light_source = 2
+ambient_light_color = Color(0.415686, 0.537255, 0.72549, 1)
+ambient_light_energy = 1.5
+ssao_radius = 1.41
+ssao_intensity = 3.39
+ssao_detail = 2.0
+ssao_sharpness = 0.26
+ssil_radius = 3.65
+ssil_intensity = 4.0
+ssil_sharpness = 0.43
+ssil_normal_rejection = 0.9
+sdfgi_read_sky_light = false
+
+[sub_resource type="CompositorEffect" id="CompositorEffect_fkbhw"]
+resource_local_to_scene = false
+resource_name = ""
+enabled = true
+effect_callback_type = 4
+needs_motion_vectors = false
+needs_normal_roughness = true
+script = ExtResource("6_fkbhw")
+metadata/_custom_type_script = "uid://d07pg1sb8lt1m"
+
+[sub_resource type="Compositor" id="Compositor_pphgw"]
+compositor_effects = Array[CompositorEffect]([SubResource("CompositorEffect_fkbhw")])
+
+[sub_resource type="Animation" id="Animation_m0rpm"]
+length = 0.001
+
+[sub_resource type="Animation" id="Animation_rjqes"]
+resource_name = "rotating_objects"
+length = 5.0
+loop_mode = 1
+
+[sub_resource type="Animation" id="Animation_34m0v"]
+resource_name = "planet"
+length = 120.0
+loop_mode = 1
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_xr1em"]
+_data = {
+&"RESET": SubResource("Animation_m0rpm"),
+&"moving_objects": SubResource("Animation_rjqes"),
+&"planet": SubResource("Animation_34m0v")
+}
+
+[node name="World" type="Node3D"]
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+stretch_shrink = 2
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(576, 324)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 6.03694, 7.50437)
+projection = 1
+size = 8.095
+far = 50.0
+
+[node name="meshes" type="Node3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(0.528438, 0, 0.848972, 0, 1, 0, -0.848972, 0, 0.528438, 0, 0, 0)
+
+[node name="turret" parent="SubViewportContainer/SubViewport/meshes" instance=ExtResource("7_pphgw")]
+transform = Transform3D(-0.380086, 0, -0.924951, 0, 1, 0, 0.924951, 0, -0.380086, 1.04125, -0.0457354, -0.771611)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/meshes"]
+transform = Transform3D(0.999992, -0.00215819, 0.00335369, 0.0021752, 0.999985, -0.0050754, -0.00334266, 0.00508265, 0.999981, 0, 0, 0)
+mesh = SubResource("PlaneMesh_fkbhw")
+surface_material_override/0 = SubResource("ShaderMaterial_pphgw")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(-0.101372, 0.707474, 0.699432, 0.00664804, -0.702556, 0.711598, 0.994826, 0.076786, 0.0665162, 8.7948, 9.09649, -0.43273)
+light_color = Color(0.423529, 0.94902, 0.941176, 1)
+light_energy = 2.0
+shadow_enabled = true
+shadow_bias = 0.5
+shadow_blur = 0.1
+directional_shadow_mode = 1
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport"]
+environment = SubResource("Environment_n4gow")
+compositor = SubResource("Compositor_pphgw")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="SubViewportContainer/SubViewport"]
+libraries = {
+&"": SubResource("AnimationLibrary_xr1em")
+}
+autoplay = "planet"
