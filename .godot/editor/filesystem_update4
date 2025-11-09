@@ -1,7 +1,0 @@
-res://Maps/base_scene.tscn
-res://Assets/Material.tres
-res://Assets/materials/grass.gdshader
-res://Assets/materials/new_shader_material.gdshader
-res://Assets/materials/grass.tres
-res://Scenes/player.tscn
-res://Scripts/player.gd
