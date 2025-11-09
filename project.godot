@@ -11,8 +11,8 @@ config_version=5
 [application]
 
 config/name="turret_game"
-run/main_scene="uid://cnuan21r3remy"
-config/features=PackedStringArray("4.4", "Forward Plus")
+run/main_scene="uid://b05745iq33irx"
+config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://Assets/icon.png"
 
 [display]

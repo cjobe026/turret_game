@@ -1,22 +1,18 @@
 [gd_scene load_steps=4 format=3 uid="uid://ognr0bks5bsy"]
 
 [ext_resource type="Script" uid="uid://stbs1olkv28w" path="res://Scripts/player.gd" id="1_cvnsp"]
-[ext_resource type="PackedScene" uid="uid://bfwfsf04vxydj" path="res://Assets/models/mixamo_base.glb" id="2_6t5aa"]
+[ext_resource type="PackedScene" uid="uid://dem78ql42at47" path="res://human_godot.tscn" id="2_cvnsp"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_vgqql"]
+height = 1.79688
 radius = 0.3
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_cvnsp")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.01875, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.917187, 0)
 shape = SubResource("CylinderShape3D_vgqql")
-
-[node name="visuals" type="Node3D" parent="."]
-
-[node name="mixamo_base" parent="visuals" instance=ExtResource("2_6t5aa")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 
 [node name="Node3D" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 6.037, 7.504)
@@ -26,3 +22,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 2.38419e-07, 0, -2.38419e-07, 1, 0, -0.00
 projection = 1
 size = 8.095
 far = 50.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+
+[node name="human_godot" parent="MeshInstance3D" instance=ExtResource("2_cvnsp")]

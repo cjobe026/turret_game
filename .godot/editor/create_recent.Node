@@ -1,6 +1,9 @@
+MultiMeshInstance3D
+MeshInstance3D
+AnimationTree
+AnimationPlayer
 StaticBody3D
 Node3D
 CollisionShape3D
 CharacterBody3D
 CSGBox3D
-MeshInstance3D
