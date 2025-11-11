@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=4 uid="uid://yv3d7l233ymh"]
+
+[ext_resource type="Script" uid="uid://b5m1bwbw6pxk8" path="res://Assets/NewGrass/GrassBlade.gd" id="2_g8uqx"]
+
+[sub_resource type="MultiMesh" id="MultiMesh_6bk2i"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g8uqx"]
+vertex_color_use_as_albedo = true
+albedo_color = Color(0, 0.82727385, 0.7071501, 1)
+billboard_mode = 2
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_n6chy"]
+_surfaces = [{
+"aabb": AABB(-0.0095, 0, 0, 0.019, 0.4, 1e-05),
+"attribute_data": PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="),
+"format": 34359742487,
+"index_count": 15,
+"index_data": PackedByteArray("AAABAAIAAQACAAMAAgADAAQAAwAEAAUABAAFAAYA"),
+"material": SubResource("StandardMaterial3D_g8uqx"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 5,
+"vertex_data": PackedByteArray("46UbPAAAAAAAAAAA46UbvAAAAAAAAAAA46WbO83MTD4AAAAA46Wbu83MTD4AAAAAAAAAAM3MzD4AAAAA////f/9//78AAP9//3//v/eCBv0JA3vBB30G/QkDg77/f///AAD/vw==")
+}]
+
+[node name="Grass3D" type="MultiMeshInstance3D"]
+multimesh = SubResource("MultiMesh_6bk2i")
+
+[node name="GrassBlade" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.026694953, 0)
+mesh = SubResource("ArrayMesh_n6chy")
+script = ExtResource("2_g8uqx")
+baseWidth = 0.019
+tipWidth = 0.0
+grassHeight = 0.4
